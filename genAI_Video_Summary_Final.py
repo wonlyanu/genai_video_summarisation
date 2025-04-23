@@ -53,7 +53,7 @@ def extract_frames(video_path, interval_seconds=5):
       current_frame += fps * interval_seconds
       continue
 
-   frame_path = os.path.join(frame_directory, f"frame_{frame_number:03d}.jpg")
+   frame_path = os.path.join(frame_directory, f"frame_{frame_number:03d}.jpg");
    cv2.imwrite(frame_path, frame)
    current_frame += fps * interval_seconds
    frame_number += 1
