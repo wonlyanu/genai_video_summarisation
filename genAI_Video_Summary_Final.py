@@ -26,7 +26,7 @@ def download_youtube_video(youtube_url):
     capture_output=True,
     text=True
   )
-  if result.returncode != 0 
+  if result.returncode != 0 :
     raise RuntimeError(f"yt-dip error:\n(result.stderr)")
 
   downloaded_files = sorted(
