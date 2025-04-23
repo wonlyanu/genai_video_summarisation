@@ -18,7 +18,7 @@ model = ChatGroq(
 def download_youtube_video(youtube_url):
   result = subprocess.run(
     [
-      "yt-dip",
+      "yt-dlp",
       ".f", "best[ext=mp4]",
       "-o", os.path.join(videos_directory, "%(title)s.%(exit).s"),
       youtube_url
@@ -27,7 +27,7 @@ def download_youtube_video(youtube_url):
     text=True
   )
   if result.returncode != 0 :
-    raise RuntimeError(f"yt-dip error:\n(result.stderr)")
+    raise RuntimeError(f"yt-dlp error:\n(result.stderr)")
 
   downloaded_files = sorted(
     os.listdir(videos_directory),
@@ -68,11 +68,11 @@ def describe_video():
   prompt = "You are a helpful assistant. Summarize the video based on the following frame filenames:\n" + "\n".join(descriptions)
   return model.invoke(prompt)
 
-def rewrite_summary(summary)
+def rewrite_summary(summary):
   prompt = f"Please rewrite this video summary in a polished and easy to understand way:\n\n{summary}"
   return model.invoke(prompt)
 
-def turn_into_story(summary)
+def turn_into_story(summary):
   prompt = f"Turn the following video summary into a narrative story with characters, settings, conflict and resolution: \n\n{summary}"
   return model.invoke(prompt)
 
@@ -125,7 +125,7 @@ if "summary" in st.session_state:
   with col2:
     if st.button("Create story from summary"):
       with st.spinner("Creating summary..."):
-        story = turn_into_summary(st.session_state["summary"])
+        story = turn_into_story(st.session_state["summary"])
         st.markdown("### Cinematic Summary:")
         st.markdown(story)
     
