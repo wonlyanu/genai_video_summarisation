@@ -77,6 +77,58 @@ def turn_into_story(summary)
   return model.invoke(prompt)
 
 st.title("Luna - YouTube/Uploaded Video Summarizer using Groq LLM")
-st.image("")
+st.image("curly.jpg")
+
+youtube_url = st.text_input("Paste a YouTube video URL:", placeholder="https://www.youtube.com/watch?v=example")
+
+if youtube_url:
+  try:
+    with st.spinner("Downloading and summarizing video...")
+    video_path = download_youtube_video(youtube_url)
+    extract_frames(video_path)
+    summary = describe_video()
+    st.session_state["summary"] = summary
+
+   st.markdown("## Video Summary:")
+   st.markdown(summary)
+
+ except Exception as e:
+   st.error(f"Error: {e}")
+
+st.divider()
+
+uploaded_file = st.file_uploader("or upload a video file:", type=["mp4", "avi", "mov", "mkv"])
+
+if uploaded_file:
+  with st.spinner("Processing uploaded file..."):
+    saved_path = os.path.join(videos_directory, uploaded_file.name)
+    with open(saved_path, "wb") as f:
+      f.write(uploaded_file.getbuffer())
+
+    extract_frames(saved_path)
+    summary = describe_video()
+    st.session_state["summary"] = summary
+
+  st.markdown("### Summary of Uploaded Video:")
+  st.markdown(summary)
+
+if "summary" in st.session_state:
+  col1, col2 = st.columns(2)
+
+  with col1:
+    if st.button("Rewrite summary nicely"):
+      with st.spinner("Rewriting summary..."):
+        rewritten = rewrite_summary(st.session_state["summary"])
+        st.markdown("### Rewrite Summary:")
+        st.markdown(rewritten)
+
+  with col2:
+    if st.button("Create story from summary"):
+      with st.spinner("Creating summary..."):
+        story = turn_into_summary(st.session_state["summary"])
+        st.markdown("### Cinematic Summary:")
+        st.markdown(story)
+    
+
 
 
